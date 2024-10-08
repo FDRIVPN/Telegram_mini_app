@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Game</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // تنظیم ابعاد بوم (canvas) به اندازه کل صفحه
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // بارگذاری تصویر پس‌زمینه
+        const background = new Image();
+        background.src = 'https://via.placeholder.com/800x600.png'; // از یک URL معتبر استفاده می‌کنیم
+
+        background.onload = function() {
+            // رسم تصویر پس‌زمینه
+            function drawBackground() {
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+            }
+
+            // به‌روزرسانی و رسم صفحه
+            function update() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBackground();
+                requestAnimationFrame(update);
+            }
+
+            update(); // شروع حلقه رس
