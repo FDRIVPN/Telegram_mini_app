@@ -46,6 +46,28 @@
         #menu2 { left: 35%; background-image: url('image2.png'); }
         #menu3 { left: 60%; background-image: url('image3.png'); }
         #menu4 { left: 85%; background-image: url('image4.png'); }
+        #newScreen {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('new_background.jpg');
+            background-size: cover;
+        }
+        #backButton {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 40px;
+            background-color: #c05a00;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -59,10 +81,20 @@
 <div id="menu3" class="menu-item"></div>
 <div id="menu4" class="menu-item"></div>
 
+<!-- صفحه جدید -->
+<div id="newScreen">
+    <div id="task1" class="menu-item" style="top: 20%; left: 40%; width: 200px; height: 200px; background-image: url('task_x.png');"></div>
+    <div id="task2" class="menu-item" style="top: 50%; left: 5%; width: 200px; height: 200px; background-image: url('task_telegram.png');"></div>
+    <div id="sideTask" class="menu-item" style="top: 50%; left: 10%; width: 140px; height: 140px; background-image: url('task_youtube.png');"></div>
+    <div id="backButton">× بازگشت</div>
+</div>
+
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const scoreDisplay = document.getElementById('score');
+    const newScreen = document.getElementById('newScreen');
+    const backButton = document.getElementById('backButton');
     let score = 0;
 
     // اندازه صفحه
@@ -98,11 +130,6 @@
         setTimeout(() => plusOne.remove(), 1000);
     }
 
-    // تنظیمات منوها
-    document.getElementById('menu1').addEventListener('click', () => {
-        alert('منوی جدید باز شد!');
-    });
-
     // انیمیشن فید برای +1
     const styleSheet = document.styleSheets[0];
     styleSheet.insertRule(`
@@ -112,6 +139,40 @@
         }
     `, styleSheet.cssRules.length);
 
+    // تنظیمات منوها
+    document.getElementById('menu1').addEventListener('click', () => {
+        showNewScreen();
+    });
+
+    document.getElementById('menu2').addEventListener('click', () => {
+        alert('منوی جدید');
+    });
+
+    // نمایش صفحه جدید
+    function showNewScreen() {
+        newScreen.style.display = 'block';
+    }
+
+    // بازگشت به منوی اصلی
+    backButton.addEventListener('click', () => {
+        newScreen.style.display = 'none';
+    });
+
+    // رویدادهای صفحه جدید
+    document.getElementById('task1').addEventListener('click', () => {
+        score += 1000;
+        scoreDisplay.textContent = score;
+    });
+
+    document.getElementById('task2').addEventListener('click', () => {
+        score += 1000;
+        scoreDisplay.textContent = score;
+    });
+
+    document.getElementById('sideTask').addEventListener('click', () => {
+        score += 500;
+        scoreDisplay.textContent = score;
+    });
 </script>
 </body>
 </html>
