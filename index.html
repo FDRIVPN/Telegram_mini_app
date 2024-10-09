@@ -1,126 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Game</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-            background-color: #f5f500;
-        }
-        #score {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 60px;
-            font-family: sans-serif;
-            color: black;
-        }
-    </style>
+    <title>بازی سکه</title>
+    <script>
+        // بعد از نیم ثانیه به بازی هدایت می‌شود
+        setTimeout(function() {
+            window.location.href = "/game"; // به آدرس سرور هدایت می‌شود
+        }, 500); // نیم ثانیه
+    </script>
 </head>
 <body>
-
-    <div id="score">0</div>
-    <canvas id="gameCanvas"></canvas>
-    
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
-
-        let WIDTH, HEIGHT;
-        let score = 0;
-        let showingScores = [];
-        let coin = new Image();
-        coin.src = 'https://via.placeholder.com/600';  // لینک به تصویر سکه
-        let images = [
-            'https://via.placeholder.com/140',  // لینک به تصویر 1
-            'https://via.placeholder.com/140',  // لینک به تصویر 2
-            'https://via.placeholder.com/140',  // لینک به تصویر 3
-            'https://via.placeholder.com/140'   // لینک به تصویر 4
-        ].map(src => {
-            let img = new Image();
-            img.src = src;
-            return img;
-        });
-
-        // تنظیم ابعاد بوم
-        function resizeCanvas() {
-            WIDTH = window.innerWidth;
-            HEIGHT = window.innerHeight;
-            canvas.width = WIDTH;
-            canvas.height = HEIGHT;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        // تنظیم موقعیت سکه در مرکز صفحه
-        let coinX, coinY;
-        function centerCoin() {
-            coinX = WIDTH / 2 - 300;
-            coinY = HEIGHT / 1.69 - 300;
-        }
-        centerCoin();
-
-        // رسم سکه و 4 تصویر پایین صفحه
-        function drawImages() {
-            // رسم سکه
-            ctx.drawImage(coin, coinX, coinY, 600, 600);
-            // رسم تصاویر پایین صفحه
-            images.forEach((img, i) => {
-                ctx.drawImage(img, (i + 0.7) * WIDTH / 5 - 70, HEIGHT - 200, 140, 140);
-            });
-        }
-
-        // نمایش امتیاز
-        function showScore() {
-            scoreElement.textContent = score;
-        }
-
-        // نمایش عدد +1 هنگام کلیک
-        function showPlusX(x, y) {
-            showingScores.push({ x, y, time: Date.now() + 1000 });
-        }
-
-        // تشخیص کلیک
-        canvas.addEventListener('click', (e) => {
-            const mouseX = e.clientX;
-            const mouseY = e.clientY;
-            if (mouseX > coinX && mouseX < coinX + 600 && mouseY > coinY && mouseY < coinY + 600) {
-                score++;
-                showScore();
-                showPlusX(mouseX, mouseY);
-            }
-        });
-
-        // به‌روزرسانی و رسم صفحه
-        function update() {
-            ctx.clearRect(0, 0, WIDTH, HEIGHT);
-            drawImages();
-
-            // نمایش عدد +1
-            showingScores = showingScores.filter(s => {
-                const timeRemaining = s.time - Date.now();
-                if (timeRemaining > 0) {
-                    ctx.font = '60px sans-serif';
-                    ctx.fillStyle = 'black';
-                    ctx.fillText('+1', s.x, s.y - (1000 - timeRemaining) / 10);
-                    return true;
-                }
-                return false;
-            });
-
-            requestAnimationFrame(update);
-        }
-
-        update();  // شروع حلقه بازی
-    </script>
-
+    <h1>خوش آمدید به بازی سکه!</h1>
+    <p>لطفاً صبر کنید...</p>
 </body>
 </html>
