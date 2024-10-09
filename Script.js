@@ -10,14 +10,15 @@ let score = 0;
 let gameState = 'MAIN_MENU';
 
 const images = {
-    background: 'images/background.jpg',
-    coin: 'images/ggg.png',
-    newBackground: 'images/new_background.jpg',
-    newImage1: 'images/new_image1.png',
-    newImage2: 'images/new_image2.png',
-    sideImage1: 'images/side_image1.png',
+    background: 'background.jpg', // تغییر مسیر
+    coin: 'ggg.png',              // تغییر مسیر
+    newBackground: 'new_background.jpg', // تغییر مسیر
+    newImage1: 'new_image1.png', // تغییر مسیر
+    newImage2: 'new_image2.png', // تغییر مسیر
+    sideImage1: 'side_image1.png', // تغییر مسیر
     imageArray: []
 };
+
 
 const loadImages = (sources) => {
     return new Promise((resolve) => {
