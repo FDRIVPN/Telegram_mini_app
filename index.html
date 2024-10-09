@@ -95,7 +95,9 @@
     const scoreDisplay = document.getElementById('score');
     const newScreen = document.getElementById('newScreen');
     const backButton = document.getElementById('backButton');
-    let score = 0;
+    let score = parseInt(localStorage.getItem('score')) || 0;
+
+    scoreDisplay.textContent = score;
 
     // اندازه صفحه
     canvas.width = window.innerWidth;
@@ -112,6 +114,7 @@
     coin.addEventListener('click', () => {
         score += 1;
         scoreDisplay.textContent = score;
+        localStorage.setItem('score', score);  // ذخیره امتیاز
         showPlusOne(event.clientX, event.clientY);
     });
 
@@ -162,16 +165,19 @@
     document.getElementById('task1').addEventListener('click', () => {
         score += 1000;
         scoreDisplay.textContent = score;
+        localStorage.setItem('score', score);  // ذخیره امتیاز
     });
 
     document.getElementById('task2').addEventListener('click', () => {
         score += 1000;
         scoreDisplay.textContent = score;
+        localStorage.setItem('score', score);  // ذخیره امتیاز
     });
 
     document.getElementById('sideTask').addEventListener('click', () => {
         score += 500;
         scoreDisplay.textContent = score;
+        localStorage.setItem('score', score);  // ذخیره امتیاز
     });
 </script>
 </body>
