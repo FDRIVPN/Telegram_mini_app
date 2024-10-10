@@ -1,78 +1,58 @@
-// تنظیمات اولیه
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+// تنظیم اندازه بوم
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// متغیرها
 let score = 0;
-let coin = { x: canvas.width / 2 - 100, y: canvas.height / 1.8, size: 100 };
-let images = [];
-let gameState = 'MAIN_MENU'; // حالت بازی
-
-// تابع برای بارگذاری تصاویر
-function loadImage(src) {
-    const img = new Image();
-    img.src = src;
-    return img;
-}
+let coin = {
+    x: canvas.width / 2 - 100,
+    y: canvas.height / 2 - 100,
+    width: 200,
+    height: 200
+};
 
 // بارگذاری تصاویر
-const background = loadImage('background.png');
-const coinImage = loadImage('ggg.png');
+const coinImg = new Image();
+coinImg.src = 'ggg.png'; // مسیر تصویر سکه
 
-// ذخیره‌سازی سکه‌ها در مرورگر
-function loadScore() {
-    const savedScore = localStorage.getItem('coinScore');
-    if (savedScore) {
-        score = parseInt(savedScore, 10);
-    }
-}
+// رویداد کلیک روی بوم
+canvas.addEventListener("click", (event) => {
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
 
-function saveScore() {
-    localStorage.setItem('coinScore', score);
-}
-
-// رسم سکه در مرکز صفحه
-function drawCoin() {
-    ctx.drawImage(coinImage, coin.x, coin.y, coin.size, coin.size);
-}
-
-// نمایش امتیاز
-function showScore() {
-    ctx.font = '50px Arial';
-    ctx.fillStyle = 'white';
-    ctx.fillText(`امتیاز: ${score}`, canvas.width / 2 - 100, 100);
-}
-
-// مدیریت کلیک کاربر روی سکه
-canvas.addEventListener('click', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-
-    // بررسی برخورد با سکه
-    if (
-        mouseX >= coin.x &&
-        mouseX <= coin.x + coin.size &&
-        mouseY >= coin.y &&
-        mouseY <= coin.y + coin.size
-    ) {
+    // بررسی برخورد کلیک با سکه
+    if (mouseX >= coin.x && mouseX <= coin.x + coin.width &&
+        mouseY >= coin.y && mouseY <= coin.y + coin.height) {
         score++;
-        saveScore(); // ذخیره سکه‌ها در مرورگر
     }
 });
 
-// حلقه اصلی بازی
-function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+// تابع برای نمایش امتیاز
+function showScore() {
+    ctx.font = "48px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText(`امتیاز: ${score}`, 50, 50);
+}
 
+// تابع رسم سکه
+function drawCoin() {
+    ctx.drawImage(coinImg, coin.x, coin.y, coin.width, coin.height);
+}
+
+// حلقه بازی
+function gameLoop() {
+    // پاک کردن صفحه
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // رسم سکه و امتیاز
     drawCoin();
     showScore();
 
     requestAnimationFrame(gameLoop);
 }
 
-// شروع بازی
-loadScore(); // بارگذاری امتیاز ذخیره شده
+// شروع حلقه بازی
 gameLoop();
