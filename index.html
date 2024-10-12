@@ -47,7 +47,15 @@
 
     // بارگذاری تصویر سکه
     const coinImage = new Image();
-    coinImage.src = 'ggg.png'; // بررسی کنید که این تصویر وجود دارد.
+coinImage.src = 'ggg.png'; // بررسی کنید که این تصویر وجود دارد.
+coinImage.onload = function() {
+    console.log("Coin image loaded successfully."); // پیام برای بررسی بارگذاری تصویر
+    drawCoin();
+};
+coinImage.onerror = function() {
+    console.error("Error loading coin image."); // پیام خطا در بارگذاری
+};
+
     const coinWidth = 100;
     const coinHeight = 100;
     let coinX = canvas.width / 2 - coinWidth / 2;
