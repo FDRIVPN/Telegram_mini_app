@@ -3,95 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coin Game</title>
+    <title>Telegram Mini App</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: black;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: white;
-            font-family: sans-serif;
-        }
-        #gameCanvas {
-            background-image: url('background.png');
-            background-size: cover;
-            width: 100%;
-            height: 100%;
+            position: relative;
         }
         #score {
             position: absolute;
             top: 20px;
             left: 20px;
             font-size: 30px;
+            color: white; /* متن امتیاز به رنگ سفید */
+        }
+        #coin {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: 50%; /* مرکز عمودی */
+            left: 50%; /* مرکز افقی */
+            transform: translate(-50%, -50%); /* برای قرار دادن سکه در مرکز */
         }
     </style>
 </head>
 <body>
 
-<canvas id="gameCanvas"></canvas>
+<img id="background" src="background.png" style="width:100vw; height:100vh; position: absolute; top: 0; left: 0;">
+<img id="coin" src="ggg.png">
+
 <div id="score">Score: 0</div>
 
 <script>
-    // لوگیری از نمایش در حالت دسکتاپ
-    function checkWindowSize() {
-        if (window.innerWidth > 768) {
-            document.body.innerHTML = "<h1>Please use this game on mobile!</h1>";
-        }
-    }
-    window.onload = checkWindowSize;
-    window.onresize = checkWindowSize;
-
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
     const scoreElement = document.getElementById('score');
-    let score = localStorage.getItem('score') ? parseInt(localStorage.getItem('score')) : 0;
-
-    // تنظیمات بوم
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // بارگذاری تصویر سکه
-    const coinImage = new Image();
-    coinImage.src = 'ggg.png'; // آدرس تصویر سکه
-
-    const coinWidth = 100;
-    const coinHeight = 100;
-    let coinX = canvas.width / 2 - coinWidth / 2;
-    let coinY = canvas.height / 2 - coinHeight / 2;
-
-    // رسم سکه
-    function drawCoin() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(coinImage, coinX, coinY, coinWidth, coinHeight);
-        scoreElement.textContent = `Score: ${score}`;
-    }
+    let score = localStorage.getItem('score') || 0;
+    scoreElement.textContent = `Score: ${score}`;
 
     // به‌روزرسانی امتیاز
     function updateScore() {
         score++;
         localStorage.setItem('score', score);
-        drawCoin();
+        scoreElement.textContent = `Score: ${score}`;
     }
 
     // رویداد کلیک روی سکه
-    canvas.addEventListener('click', function(event) {
-        const mouseX = event.clientX;
-        const mouseY = event.clientY;
-
-        if (
-            mouseX >= coinX && mouseX <= coinX + coinWidth &&
-            mouseY >= coinY && mouseY <= coinY + coinHeight
-        ) {
-            updateScore();
-        }
+    document.getElementById('coin').addEventListener('click', function() {
+        updateScore();
     });
 
     // شروع بازی
-    coinImage.onload = drawCoin;
+    scoreElement.textContent = `Score: ${score}`;
 </script>
 
 </body>
