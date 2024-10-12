@@ -25,7 +25,7 @@
             top: 20px;
             left: 20px;
             font-size: 30px;
-            color: white;
+            color: white; /* اطمینان از رنگ سفید برای امتیاز */
             font-family: sans-serif;
         }
     </style>
@@ -39,7 +39,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const scoreElement = document.getElementById('score');
-    let score = localStorage.getItem('score') || 0;
+    let score = parseInt(localStorage.getItem('score')) || 0; // تبدیل به عدد
 
     // تنظیمات بوم
     canvas.width = window.innerWidth;
@@ -47,7 +47,7 @@
 
     // بارگذاری تصویر سکه
     const coinImage = new Image();
-    coinImage.src = 'https://raw.githubusercontent.com/fdrivpn/telegram_mini_app/main/ggg.png'; // به این URL دقت کنید
+    coinImage.src = 'https://raw.githubusercontent.com/fdrivpn/telegram_mini_app/main/ggg.png'; // URL سکه
     const coinWidth = 100;
     const coinHeight = 100;
     let coinX = canvas.width / 2 - coinWidth / 2;
@@ -57,13 +57,13 @@
     function drawCoin() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(coinImage, coinX, coinY, coinWidth, coinHeight);
-        scoreElement.textContent = `Score: ${score}`;
+        scoreElement.textContent = `Score: ${score}`; // نمایش امتیاز
     }
 
     // به‌روزرسانی امتیاز
     function updateScore() {
         score++;
-        localStorage.setItem('score', score);
+        localStorage.setItem('score', score); // ذخیره امتیاز در localStorage
         drawCoin();
     }
 
@@ -81,7 +81,7 @@
     });
 
     // شروع بازی
-    coinImage.onload = drawCoin;
+    coinImage.onload = drawCoin; // بعد از بارگذاری سکه، رسم آن
 </script>
 
 </body>
