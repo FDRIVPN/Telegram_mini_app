@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Tasks</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: sans-serif;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Complete a task to earn extra points!</h1>
+<button id="earnPoints">Earn 1000 Points</button>
+
+<script>
+    document.getElementById('earnPoints').addEventListener('click', function() {
+        let score = localStorage.getItem('score') || 0;
+        score = parseInt(score) + 1000;
+        localStorage.setItem('score', score);
+        alert('You earned 1000 points!');
+    });
+</script>
+
+</body>
+</html>
