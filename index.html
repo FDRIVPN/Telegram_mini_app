@@ -1,205 +1,88 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی سکه</title>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
-    
+    <title>Coin Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #gameCanvas {
+            background-image: url('background.png');
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+        }
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 30px;
+            color: white;
+            font-family: sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <script>
-        async function main() {
-            // بارگذاری Pyodide
-            let pyodide = await loadPyodide();
-            await pyodide.loadPackage("pygame");
 
-            // کد پایتون شما
-            const pythonCode = `
-import pygame
+<canvas id="gameCanvas"></canvas>
+<div id="score">Score: 0</div>
 
-# تنظیمات اولیه
-pygame.init()
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreElement = document.getElementById('score');
+    let score = localStorage.getItem('score') || 0;
 
-# ایجاد صفحه به صورت تمام صفحه
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-WIDTH, HEIGHT = screen.get_size()
+    // تنظیمات بوم
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-pygame.display.set_caption("بازی سکه")
+    // بارگذاری تصویر سکه
+    const coinImage = new Image();
+    coinImage.src = 'ggg.png';
+    const coinWidth = 100;
+    const coinHeight = 100;
+    let coinX = canvas.width / 2 - coinWidth / 2;
+    let coinY = canvas.height / 2 - coinHeight / 2;
 
-# رنگ‌ها
-BLACK = (0, 0, 0)
+    // رسم سکه
+    function drawCoin() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(coinImage, coinX, coinY, coinWidth, coinHeight);
+        scoreElement.textContent = `Score: ${score}`;
+    }
 
-# تابع برای بارگذاری تصاویر
-def load_image(image_path, size):
-    return pygame.transform.scale(pygame.image.load(image_path), size)
+    // به‌روزرسانی امتیاز
+    function updateScore() {
+        score++;
+        localStorage.setItem('score', score);
+        drawCoin();
+    }
 
-# بارگذاری تصویر پس‌زمینه و سکه
-background_image = load_image('background.png', (WIDTH, HEIGHT))
-coin_image = load_image('ggg.png', (600, 600))
-coin_rect = coin_image.get_rect()
+    // رویداد کلیک روی سکه
+    canvas.addEventListener('click', function(event) {
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
 
-# بارگذاری تصاویر دیگر در حالت منوی اصلی
-image1 = load_image('image1.png', (190, 190))
-image2 = load_image('image2.png', (150, 150))
-image3 = load_image('image3.png', (130, 130))
-image4 = load_image('image4.png', (130, 130))
-
-# تنظیم موقعیت تصاویر در پایین صفحه
-image1_rect = image1.get_rect(midbottom=(WIDTH * 0.16, HEIGHT - 40))
-image2_rect = image2.get_rect(midbottom=(WIDTH * 0.43, HEIGHT - 60))
-image3_rect = image3.get_rect(midbottom=(WIDTH * 0.64, HEIGHT - 60))
-image4_rect = image4.get_rect(midbottom=(WIDTH * 0.84, HEIGHT - 55))
-
-image_rects = [image1_rect, image2_rect, image3_rect, image4_rect]
-images = [image1, image2, image3, image4]
-
-# بارگذاری تصاویر برای صفحه جدید
-new_background_image = load_image('new_background.jpg', (WIDTH, HEIGHT))
-new_image1 = load_image('task_x.png', (600, 340))
-new_image2 = load_image('task_telegram.png', (600, 340))
-
-# تنظیم موقعیت تصاویر جدید
-new_image1_rect = new_image1.get_rect(topleft=(55, HEIGHT // 2.5 + 70))
-new_image2_rect = new_image2.get_rect(topleft=(55, HEIGHT // 7 + 70))
-# تصویر سمت چپ
-side_image1 = load_image('task_youtobe.png', (600, 340))
-side_image1_rect = side_image1.get_rect(topleft=(55, HEIGHT // 1.5 + 70))
-
-# دکمه برگشت
-back_button_rect = pygame.Rect(2 *WIDTH // 2 - 70, HEIGHT - 1350 - 80, 40, 40)
-
-# حالت بازی
-MAIN_MENU = 0
-NEW_SCREEN = 1
-game_state = MAIN_MENU
-
-# تابع برای قرار دادن سکه در مرکز صفحه
-def center_coin():
-    coin_rect.center = (WIDTH // 2, HEIGHT // 1.8)
-
-# قرار دادن سکه در مرکز صفحه
-center_coin()
-
-# کلاس برای نمایش عدد +1
-class PlusOne:
-    def __init__(self, position):
-        self.x, self.y = position
-        self.start_time = pygame.time.get_ticks()
-        self.duration = 1000
-        self.fade_duration = 1000
-        self.initial_y = position[1]
-        self.max_height = self.initial_y - 150
-        self.alpha = 255
-
-    def update(self):
-        elapsed_time = (pygame.time.get_ticks() - self.start_time) / self.duration
-        if elapsed_time < 1:
-            self.y = self.initial_y - (200 * elapsed_time)
-            return True
-        else:
-            fade_time = (pygame.time.get_ticks() - self.start_time - self.duration) / self.fade_duration
-            if fade_time < 1:
-                self.alpha = 255 - (255 * fade_time)
-                self.y = self.max_height
-                return True
-            return False
-
-    def draw(self, surface):
-        font = pygame.font.Font(None, 120)
-        text = font.render("+1", True, (255, 255, 255))
-        text.set_alpha(self.alpha)
-        text_rect = text.get_rect(center=(self.x, self.y))
-        surface.blit(text, text_rect)
-
-# کلاس برای مدیریت کلیک‌ها
-class ClickManager:
-    def __init__(self):
-        self.plus_ones = []
-
-    def handle_click(self, position):
-        self.plus_ones.append(PlusOne(position))
-
-    def update(self):
-        for plus_one in self.plus_ones[:]:
-            if not plus_one.update():
-                self.plus_ones.remove(plus_one)
-
-    def draw(self, surface):
-        for plus_one in self.plus_ones:
-            plus_one.draw(surface)
-
-# متغیرها
-score = 0
-running = True
-click_manager = ClickManager()
-clock = pygame.time.Clock()
-
-# تابع برای نمایش امتیاز
-def show_score():
-    font = pygame.font.Font(None, 146)
-    text = font.render(f"{score}", True, (255, 255, 255))
-    text_rect = text.get_rect(center=(coin_rect.centerx, coin_rect.top - 140))
-    screen.blit(text, text_rect)
-
-# حلقه اصلی بازی
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = event.pos
-            if game_state == MAIN_MENU:
-                if coin_rect.collidepoint(mouse_x, mouse_y):
-                    score += 1
-                    click_manager.handle_click((mouse_x, mouse_y))
-                if image1_rect.collidepoint(mouse_x, mouse_y):  # کلیک روی تصویر اول
-                    game_state = NEW_SCREEN
-            elif game_state == NEW_SCREEN:
-                if new_image1_rect.collidepoint(mouse_x, mouse_y):
-                    score += 1000  # اضافه کردن ۱۰۰۰ سکه به امتیاز
-                if new_image2_rect.collidepoint(mouse_x, mouse_y):
-                    score += 1000  # اضافه کردن ۱۰۰۰ سکه به امتیاز
-                if side_image1_rect.collidepoint(mouse_x, mouse_y):
-                    score += 500  # اضافه کردن ۵۰۰ سکه به امتیاز
-                if back_button_rect.collidepoint(mouse_x, mouse_y):  # کلیک روی دکمه برگشت
-                    game_state = MAIN_MENU
-
-    # رسم صفحه بر اساس حالت بازی
-    if game_state == MAIN_MENU:
-        screen.blit(background_image, (0, 0))
-        screen.blit(coin_image, coin_rect)
-        for img, rect in zip(images, image_rects):
-            screen.blit(img, rect)
-        show_score()
-        click_manager.update()
-        click_manager.draw(screen)
-    elif game_state == NEW_SCREEN:
-        screen.blit(new_background_image, (0, 0))
-        screen.blit(new_image1, new_image1_rect)
-        screen.blit(new_image2, new_image2_rect)
-        screen.blit(side_image1, side_image1_rect)
-        
-        # رسم دکمه برگشت
-        pygame.draw.rect(screen, (200, 90, 0), back_button_rect)  # رنگ دکمه
-        font = pygame.font.Font(None, 36)
-        text = font.render("×", True, (255, 255, 255))
-        text_rect = text.get_rect(center=back_button_rect.center)
-        screen.blit(text, text_rect)
-
-    pygame.display.flip()
-    clock.tick(60)
-
-pygame.quit()
-
-            `;
-
-            await pyodide.runPythonAsync(pythonCode);
+        if (
+            mouseX >= coinX && mouseX <= coinX + coinWidth &&
+            mouseY >= coinY && mouseY <= coinY + coinHeight
+        ) {
+            updateScore();
         }
+    });
 
-        main();
-    </script>
+    // شروع بازی
+    coinImage.onload = drawCoin;
+</script>
+
 </body>
 </html>
