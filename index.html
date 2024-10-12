@@ -39,7 +39,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const scoreElement = document.getElementById('score');
-    let score = parseInt(localStorage.getItem('score')) || 0; // بارگذاری امتیاز از localStorage
+    let score = localStorage.getItem('score') || 0;
 
     // تنظیمات بوم
     canvas.width = window.innerWidth;
@@ -47,17 +47,26 @@
 
     // بارگذاری تصویر سکه
     const coinImage = new Image();
-    coinImage.src = 'ggg.png';
+    coinImage.src = 'ggg.png'; // بررسی کنید که این تصویر وجود دارد.
     const coinWidth = 100;
     const coinHeight = 100;
     let coinX = canvas.width / 2 - coinWidth / 2;
     let coinY = canvas.height / 2 - coinHeight / 2;
 
+    coinImage.onload = function() {
+        console.log("Coin image loaded successfully."); // پیام برای بررسی بارگذاری تصویر
+        drawCoin();
+    };
+
+    coinImage.onerror = function() {
+        console.error("Error loading coin image."); // پیام خطا در بارگذاری
+    };
+
     // رسم سکه
     function drawCoin() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(coinImage, coinX, coinY, coinWidth, coinHeight);
-        scoreElement.textContent = `Score: ${score}`; // نمایش امتیاز
+        scoreElement.textContent = `Score: ${score}`;
     }
 
     // به‌روزرسانی امتیاز
@@ -81,7 +90,7 @@
     });
 
     // شروع بازی
-    coinImage.onload = drawCoin;
+    drawCoin();
 </script>
 
 </body>
