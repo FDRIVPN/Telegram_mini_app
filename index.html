@@ -4,12 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بازی سکه</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: black;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+        async function main() {
+            // بارگذاری Pyodide
+            let pyodide = await loadPyodide();
+            await pyodide.loadPackage("pygame");
 
-    <!-- لینک به فایل‌های جاوا اسکریپت -->
-    <script src="game.js"></script>
+            // کد پایتون شما
+            const pythonCode = `
+import pygame
+import sys
+
+# تنظیمات اولیه
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("بازی سکه")
+
+# رنگ‌ها
+BLACK = (0, 0, 0)
+
+# تابع برای بارگذاری تصاویر
+def load_image(image_path, size):
+    return pygame.transform.scale(pygame.image.load(image_path), size)
+
+# بارگذاری تصویر پس‌زمینه و سکه
+background_image = load_image('background.png', (800, 600))
+coin_image = load_image('ggg.png', (100, 100))
+coin_rect = coin_image.get_rect(center=(400, 300))
+
+# بارگذاری تصاویر دیگر در حالت منوی اصلی
+image1 = load_image('image1.png', (190, 190))
+image2 = load_image('image2.png', (150, 150))
+image3 = load_image('image3.png', (130, 130))
+image4 = load_image('image4.png', (130, 130))
+
+# تنظیم موقعیت تصاویر در پایین صفحه
+image1_rect = image1.get_rect(midbottom=(160, 560))
+image2_rect = image2.get_rect(midbottom=(430, 540))
+image3_rect = image3.get_rect(midbottom=(640, 540))
+image4_rect = image4.get_rect(midbottom=(840, 555))
+
+image_rects = [image1_rect, image2_rect, image3_rect, image4_rect]
+images = [image1, image2, image3, image4]
+
+# حالت بازی
+MAIN_MENU = 0
+NEW_SCREEN = 1
+game_state = MAIN_MENU
+
+# متغیرها
+score = 0
+running = True
+clock = pygame.time.Clock()
+
+# تابع برای نمایش امتیاز
+def show_score():
+    font = pygame.font.Font(None, 74)
+    text = font.render(f"امتیاز: {score}", True, (255, 255, 255))
+    text_rect = text.get_rect(center=(400, 50))
+    screen.blit(text, text_rect)
+
+# حلقه اصلی بازی
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = event.pos
+            if game_state == MAIN_MENU:
+                if coin_rect.collidepoint(mouse_x, mouse_y):
+                    score += 1
+                if image1_rect.collidepoint(mouse_x, mouse_y):  # کلیک روی تصویر اول
+                    game_state = NEW_SCREEN
+
+    # رسم صفحه بر اساس حالت بازی
+    if game_state == MAIN_MENU:
+        screen.blit(background_image, (0, 0))
+        screen.blit(coin_image, coin_rect)
+        for img, rect in zip(images, image_rects):
+            screen.blit(img, rect)
+        show_score()
+    elif game_state == NEW_SCREEN:
+        # جایگاه جدید برای نمایش تصاویر جدید اضافه کنید
+        screen.fill(BLACK)  # پر کردن صفحه با رنگ سیاه
+        show_score()  # نمایش امتیاز
+
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
+            `;
+
+            await pyodide.runPythonAsync(pythonCode);
+        }
+
+        main();
+    </script>
 </body>
 </html>
