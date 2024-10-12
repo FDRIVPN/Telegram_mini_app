@@ -19,7 +19,6 @@
             padding: 10px 20px;
             font-size: 20px;
             cursor: pointer;
-            margin: 10px;
         }
     </style>
 </head>
@@ -27,7 +26,6 @@
 
 <h1>Complete a task to earn extra points!</h1>
 <button id="earnPoints">Earn 1000 Points</button>
-<button id="backToGame">Back to Game</button>
 
 <script>
     document.getElementById('earnPoints').addEventListener('click', function() {
@@ -35,10 +33,6 @@
         score = parseInt(score) + 1000;
         localStorage.setItem('score', score);
         alert('You earned 1000 points!');
-    });
-
-    document.getElementById('backToGame').addEventListener('click', function() {
-        window.location.href = 'index.html'; // بازگشت به صفحه بازی
     });
 </script>
 
