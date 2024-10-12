@@ -2,62 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Coin Game</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
+            background-color: black;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            position: relative;
-            background-color: black; /* رنگ پس‌زمینه */
+        }
+        #gameCanvas {
+            background-image: url('https://raw.githubusercontent.com/fdrivpn/telegram_mini_app/main/background.png');
+            background-size: cover;
+            width: 100%;
+            height: 100%;
         }
         #score {
             position: absolute;
             top: 20px;
             left: 20px;
             font-size: 30px;
-            color: white; /* متن امتیاز به رنگ سفید */
-        }
-        #coin {
-            width: 100px;
-            height: 100px;
-            position: absolute;
-            top: 50%; /* مرکز عمودی */
-            left: 50%; /* مرکز افقی */
-            transform: translate(-50%, -50%); /* برای قرار دادن سکه در مرکز */
+            color: white;
+            font-family: sans-serif;
         }
     </style>
 </head>
 <body>
 
-<img id="background" src="https://raw.githubusercontent.com/fdrivpn/telegram_mini_game/main/path/to/background.png" style="width:100vw; height:100vh; position: absolute; top: 0; left: 0;">
-<img id="coin" src="https://raw.githubusercontent.com/fdrivpn/telegram_mini_game/main/path/to/ggg.png">
-
+<canvas id="gameCanvas"></canvas>
 <div id="score">Score: 0</div>
 
 <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
     const scoreElement = document.getElementById('score');
     let score = localStorage.getItem('score') || 0;
-    scoreElement.textContent = `Score: ${score}`;
+
+    // تنظیمات بوم
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // بارگذاری تصویر سکه
+    const coinImage = new Image();
+    coinImage.src = 'https://raw.githubusercontent.com/fdrivpn/telegram_mini_app/main/ggg.png'; // به این URL دقت کنید
+    const coinWidth = 100;
+    const coinHeight = 100;
+    let coinX = canvas.width / 2 - coinWidth / 2;
+    let coinY = canvas.height / 2 - coinHeight / 2;
+
+    // رسم سکه
+    function drawCoin() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(coinImage, coinX, coinY, coinWidth, coinHeight);
+        scoreElement.textContent = `Score: ${score}`;
+    }
 
     // به‌روزرسانی امتیاز
     function updateScore() {
         score++;
         localStorage.setItem('score', score);
-        scoreElement.textContent = `Score: ${score}`;
+        drawCoin();
     }
 
     // رویداد کلیک روی سکه
-    document.getElementById('coin').addEventListener('click', function() {
-        updateScore();
+    canvas.addEventListener('click', function(event) {
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        if (
+            mouseX >= coinX && mouseX <= coinX + coinWidth &&
+            mouseY >= coinY && mouseY <= coinY + coinHeight
+        ) {
+            updateScore();
+        }
     });
 
     // شروع بازی
-    scoreElement.textContent = `Score: ${score}`;
+    coinImage.onload = drawCoin;
 </script>
 
 </body>
