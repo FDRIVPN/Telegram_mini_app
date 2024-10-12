@@ -15,10 +15,18 @@
             font-family: sans-serif;
             color: white;
         }
+        
         button {
             padding: 10px 20px;
             font-size: 20px;
             cursor: pointer;
+        }
+        
+        /* محدود کردن اندازه صفحه به 768px */
+        @media (min-width: 768px) {
+            body {
+                display: none; /* پنهان کردن در حالت دسکتاپ */
+            }
         }
     </style>
 </head>
@@ -28,15 +36,6 @@
 <button id="earnPoints">Earn 1000 Points</button>
 
 <script>
-    // جلوگیری از نمایش در حالت دسکتاپ
-    function checkWindowSize() {
-        if (window.innerWidth > 768) {
-            document.body.innerHTML = "<h1>Please use this game on mobile!</h1>";
-        }
-    }
-    window.onload = checkWindowSize;
-    window.onresize = checkWindowSize;
-
     document.getElementById('earnPoints').addEventListener('click', function() {
         let score = localStorage.getItem('score') ? parseInt(localStorage.getItem('score')) : 0;
         score += 1000;
