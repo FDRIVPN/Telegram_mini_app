@@ -39,7 +39,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const scoreElement = document.getElementById('score');
-    let score = localStorage.getItem('score') || 0;
+    let score = parseInt(localStorage.getItem('score')) || 0; // بارگذاری امتیاز از localStorage
 
     // تنظیمات بوم
     canvas.width = window.innerWidth;
@@ -57,7 +57,7 @@
     function drawCoin() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(coinImage, coinX, coinY, coinWidth, coinHeight);
-        scoreElement.textContent = `Score: ${score}`;
+        scoreElement.textContent = `Score: ${score}`; // نمایش امتیاز
     }
 
     // به‌روزرسانی امتیاز
