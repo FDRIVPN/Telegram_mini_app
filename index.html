@@ -2,57 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Coin Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect to Tonkeeper</title>
     <style>
         body {
-            margin: 0;
-            overflow: hidden;
-            background-color: black;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column; /* برای چیدمان عمودی */
             height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
         }
-        #coin {
-            width: 100px; /* اندازه سکه */
-            height: 100px; /* اندازه سکه */
-            cursor: pointer; /* نشان‌گر ماوس روی سکه */
+        button {
+            padding: 10px 20px;
+            background-color: #008cff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
         }
-        #score {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 30px;
-            color: white; /* رنگ سفید برای امتیاز */
-            font-family: sans-serif;
+        #walletAddress {
+            margin-top: 20px;
+            font-size: 18px;
+            color: green;
         }
     </style>
 </head>
 <body>
 
-<div id="score">Score: 0</div>
-<img id="coin" src="ggg.png" alt="Coin">
+    <div>
+        <button id="connectWalletBtn">Connect Tonkeeper</button>
+        <p id="walletAddress"></p>
+    </div>
 
-<script>
-    const scoreElement = document.getElementById('score');
-    const coinElement = document.getElementById('coin');
-    let score = parseInt(localStorage.getItem('score')) || 0; // دریافت امتیاز از localStorage
+    <script src="https://unpkg.com/@tonconnect/sdk@0.1.0/dist/tonconnect.umd.js"></script>
+    <script>
+        const connectWalletBtn = document.getElementById('connectWalletBtn');
+        const walletAddressDisplay = document.getElementById('walletAddress');
 
-    // به‌روزرسانی امتیاز
-    function updateScore() {
-        score++;
-        localStorage.setItem('score', score); // ذخیره امتیاز در localStorage
-        scoreElement.textContent = `Score: ${score}`; // به‌روز رسانی نمایش امتیاز
-    }
+        // ایجاد نمونه‌ای از TonConnect
+        const tonConnect = new TonConnect();
 
-    // رویداد کلیک روی سکه
-    coinElement.addEventListener('click', updateScore);
+        connectWalletBtn.addEventListener('click', async () => {
+            try {
+                // درخواست اتصال به کیف پول
+                const provider = await tonConnect.connect();
 
-    // نمایش امتیاز اولیه
-    scoreElement.textContent = `Score: ${score}`;
-</script>
+                // اگر اتصال موفق بود
+                if (provider) {
+                    const walletAddress = provider.accounts[0].address;
+                    walletAddressDisplay.innerText = `Connected: ${walletAddress}`;
+                    
+                    // ذخیره آدرس کیف پول در localStorage
+                    localStorage.setItem('walletAddress', walletAddress);
+
+                    connectWalletBtn.disabled = true;
+                }
+            } catch (error) {
+                console.error('Error connecting to Tonkeeper:', error);
+            }
+        });
+    </script>
 
 </body>
 </html>
