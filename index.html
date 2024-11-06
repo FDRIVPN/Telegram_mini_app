@@ -3,294 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coin Game</title>
+    <title>ربات چت مشابه ChatGPT</title>
     <style>
-        /* استایل برای صفحه بارگذاری */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .loading-circle {
-            border: 8px solid transparent;
-            border-top: 8px solid white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            margin-top: 8px;
-            color: white;
-            font-size: 20px;
-        }
-
-        /* استایل های اصلی */
-        html, body {
-            background-color: black;
-            margin: 0;
+        body {
             font-family: Arial, sans-serif;
-            height: 100%;
+            background-color: #f4f4f9;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        #score-container {
-            position: relative;
-            top: 20px;
-            color: white;
-            font-size: 36px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-
-        #ovals-container {
-            margin-top: 100px;
-            width: calc(100% - 40px); /* 100% عرض صفحه منهای 40px (20px از هر طرف) */
-        }
-
-        .decorative-oval {
-            width: 100%; /* عرض کامل */
-            height: 40px; /* ارتفاع بیضی */
+        .chat-container {
+            width: 400px;
             background-color: white;
-            border-radius: 20px; /* لبه‌های گرد */
-            margin: 10px 0; /* فاصله عمودی بین بیضی‌ها */
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
             display: flex;
-            align-items: center;
-            justify-content: space-between; /* توزیع فضا بین متن و بیضی سیاه */
-            padding: 0 10px; /* فاصله داخلی */
+            flex-direction: column;
         }
-
-        .go-oval {
-            background-color: black; /* رنگ پس‌زمینه بیضی سیاه */
-            color: white; /* رنگ متن بیضی سیاه */
-            width: 40px; /* عرض بیضی سیاه */
-            height: 40px; /* ارتفاع بیضی سیاه */
+        .chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .input-box {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 20px; /* لبه‌های گرد */
+            margin-top: 10px;
         }
-
-        #bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50px; 
-            background-color: #1a1a1a;
-            display: flex;
-            justify-content: space-around; 
-            align-items: center; 
-            padding: 0 10px; 
-            z-index: 1000; 
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); 
+        .input-box input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
-
-        .icon-container {
-            display: flex;
-            flex-direction: column; 
-            align-items: center; 
-            transition: transform 0.3s, opacity 0.3s; 
-            cursor: pointer; 
-            padding: 0 4px; 
+        .input-box button {
+            width: 20%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
         }
-
-        .icon-container img {
-            width: 20px; 
-            height: 20px; 
-            transition: transform 0.3s, filter 0.3s; 
-            margin-bottom: 5px; 
+        .input-box button:hover {
+            background-color: #45a049;
         }
-
-        .icon-container:hover img {
-            transform: scale(1.2); 
-            filter: brightness(1.2); 
+        .user-message, .ai-message {
+            margin: 5px 0;
         }
-
-        .icon-label {
-            visibility: hidden; 
-            font-size: 14px; 
-            opacity: 0; 
-            transition: opacity 0.3s, transform 0.3s; 
-            transform: translateY(10px); 
-            color: white; 
+        .user-message {
+            text-align: left;
         }
-
-        .icon-container.active .icon-label {
-            visibility: visible; 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-
-        .icon-container.active img {
-            transform: scale(1.2); 
+        .ai-message {
+            text-align: right;
         }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <div class="loading-circle"></div>
-        <div class="loading-text">Loading...</div>
-    </div>
-
-    <div id="score-container" style="display:none;">
-        <img src="tortles.png" alt="Tortles" style="width: 50px; height: 50px;">
-        <div id="score-content">
-            <span id="userScore">0</span>
-            <span style="margin-left: 10px;">tortles</span>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+            <!-- پیام‌های چت در اینجا نمایش داده می‌شوند -->
         </div>
-    </div>
-
-    <div id="ovals-container" style="display:none;">
-        <div class="decorative-oval">
-            <span>Channel Telegram</span>
-            <div class="go-oval">Go</div>
-        </div>
-        <div class="decorative-oval">
-            <span>Join X</span>
-            <div class="go-oval">Go</div>
-        </div>
-        <div class="decorative-oval">
-            <span>Follow X</span>
-            <div class="go-oval">Go</div>
-        </div>
-        <div class="decorative-oval">
-            <span>Join Bot</span>
-            <div class="go-oval">Go</div>
-        </div>
-        <div class="decorative-oval">
-            <span>Friend</span>
-            <div class="go-oval">Go</div>
-        </div>
-    </div>
-
-    <div id="showMore" style="display:none;">
-        Show More <span class="arrow">▼</span>
-    </div>
-
-    <div id="content" style="display:none;">
-        <div id="comingSoon">Coming Soon...</div>
-    </div>
-
-    <div id="bottom-bar" style="display:none;">
-        <div class="icon-container active" id="icon1" tabindex="0">
-            <img src="image1.png" alt="Left Icon">
-            <span class="icon-label">Home</span>
-        </div>
-        <div class="icon-container" id="icon2">
-            <img src="image3.png" alt="Leaderboard">
-            <span class="icon-label">Leaderboard</span>
-        </div>
-        <div class="icon-container" id="icon3">
-            <img src="image2.png" alt="Friends">
-            <span class="icon-label">Friends</span>
+        <div class="input-box">
+            <input type="text" id="userInput" placeholder="پیام خود را وارد کنید..." />
+            <button onclick="sendMessage()">ارسال</button>
         </div>
     </div>
 
     <script>
-        const scoreElement = document.getElementById('userScore');
-        const ovalsContainer = document.getElementById('ovals-container');
-        const showMore = document.getElementById('showMore');
-        const icon1 = document.getElementById('icon1');
-        const icon2 = document.getElementById('icon2');
-        const icon3 = document.getElementById('icon3');
-
-        const previousImages = {
-            icon1: 'image11.png', 
-            icon2: 'image3.png',
-            icon3: 'image2.png'
-        };
-
-        const activeImages = {
-            icon1: 'image1.png', 
-            icon2: 'image22.png', 
-            icon3: 'image33.png'
-        };
-
-        let score = parseInt(localStorage.getItem('score')) || 0;
-        scoreElement.textContent = score;
-
-        let showAll = false;
-
-        function updateShowMore() {
-            showMore.style.display = 'block';
-            showMore.innerHTML = showAll ? 'Show Less <span class="arrow">▲</span>' : 'Show More <span class="arrow">▼</span>';
+        // اضافه کردن پیام به جعبه چت
+        function appendMessage(message, sender) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add(sender + '-message');
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;  // اسکرول به پایین
         }
 
-        function toggleOvals() {
-            showAll = !showAll;
-            const ovals = ovalsContainer.querySelectorAll('.decorative-oval');
-            ovals.forEach((oval, index) => {
-                oval.style.display = showAll || index < 5 ? 'flex' : 'none';
-            });
-            updateShowMore();
-        }
+        // ارسال پیام و دریافت پاسخ از API
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value.trim();
+            if (userInput) {
+                appendMessage(userInput, 'user');
+                document.getElementById('userInput').value = '';
 
-        function activateIcon(icon) {
-            const previouslyActive = document.querySelector('.icon-container.active');
-            if (previouslyActive) {
-                previouslyActive.classList.remove('active');
-
-                const previousIconId = previouslyActive.id;
-                const previousImage = previouslyActive.querySelector('img');
-                const label = previouslyActive.querySelector('.icon-label');
-
-                label.style.opacity = '0'; 
-                label.style.visibility = 'hidden'; 
-                label.style.transform = 'translateY(10px)'; 
-
-                setTimeout(() => {
-                    previousImage.src = previousImages[previousIconId];
-                    previousImage.style.transform = 'scale(1)'; 
-                }, 100); 
+                // ارسال درخواست به API برای دریافت پاسخ واقعی
+                fetch('https://api.openai.com/v1/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_API_KEY', // کلید API شما
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',  // یا مدل دیگری که انتخاب کرده‌اید
+                        messages: [{ role: 'user', content: userInput }],
+                        max_tokens: 100,
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const aiResponse = data.choices[0].message.content.trim();
+                    appendMessage(aiResponse, 'ai');
+                })
+                .catch(error => {
+                    console.error("خطا در ارسال درخواست به API:", error);
+                    appendMessage("متاسفانه در اتصال به ربات مشکلی پیش آمد. لطفاً بعداً امتحان کنید.", 'ai');
+                });
             }
-
-            icon.classList.add('active');
-
-            const activeImage = icon.querySelector('img');
-            activeImage.src = activeImages[icon.id];
-            activeImage.style.transform = 'scale(1.2)'; 
-
-            const label = icon.querySelector('.icon-label');
-            label.style.visibility = 'visible'; 
-            label.style.opacity = '1'; 
-            label.style.transform = 'translateY(0)'; 
         }
-
-        icon1.addEventListener('click', () => activateIcon(icon1));
-        icon2.addEventListener('click', () => activateIcon(icon2));
-        icon3.addEventListener('click', () => activateIcon(icon3));
-
-        showMore.addEventListener('click', toggleOvals);
-
-        setTimeout(() => {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('score-container').style.display = 'flex';
-            document.getElementById('ovals-container').style.display = 'block';
-            document.getElementById('showMore').style.display = 'block';
-            document.getElementById('content').style.display = 'flex';
-            document.getElementById('bottom-bar').style.display = 'flex';
-        }, 3000);
     </script>
 </body>
 </html>
