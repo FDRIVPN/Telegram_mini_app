@@ -1,123 +1,81 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ربات چت مشابه ChatGPT</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .chat-container {
-            width: 400px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-box {
-            height: 300px;
-            overflow-y: scroll;
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .input-box {
-            display: flex;
-            margin-top: 10px;
-        }
-        .input-box input {
-            width: 80%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .input-box button {
-            width: 20%;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .input-box button:hover {
-            background-color: #45a049;
-        }
-        .user-message, .ai-message {
-            margin: 5px 0;
-        }
-        .user-message {
-            text-align: left;
-        }
-        .ai-message {
-            text-align: right;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صفحه دانلود</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f2f2f2;
+        overflow: hidden;
+        direction: rtl;
+    }
+
+    /* انیمیشن حرکت از پایین به بالا */
+    .shape {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        opacity: 0;
+        animation: floatUp 3s ease-in-out infinite;
+        background-color: rgba(0, 150, 136, 0.6);
+    }
+
+    /* موقعیت‌دهی اشکال به صورت رندوم */
+    .shape:nth-child(1) { left: 20%; animation-delay: 0s; }
+    .shape:nth-child(2) { left: 40%; animation-delay: 1s; }
+    .shape:nth-child(3) { left: 60%; animation-delay: 2s; }
+    .shape:nth-child(4) { left: 80%; animation-delay: 1.5s; }
+
+    /* کلید انیمیشن برای حرکت */
+    @keyframes floatUp {
+        0% { bottom: -100px; opacity: 0; }
+        50% { opacity: 0.8; }
+        100% { bottom: 100vh; opacity: 0; }
+    }
+
+    /* نوارهای نوشته */
+    .download-bar {
+        width: 300px;
+        background-color: #4caf50;
+        color: #fff;
+        padding: 15px;
+        border-radius: 25px;
+        text-align: center;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .download-bar-small {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-box" id="chatBox">
-            <!-- پیام‌های چت در اینجا نمایش داده می‌شوند -->
-        </div>
-        <div class="input-box">
-            <input type="text" id="userInput" placeholder="پیام خود را وارد کنید..." />
-            <button onclick="sendMessage()">ارسال</button>
-        </div>
-    </div>
 
-    <script>
-        // اضافه کردن پیام به جعبه چت
-        function appendMessage(message, sender) {
-            const chatBox = document.getElementById('chatBox');
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add(sender + '-message');
-            messageDiv.textContent = message;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;  // اسکرول به پایین
-        }
+<!-- اشکال در حال حرکت -->
+<div class="shape"></div>
+<div class="shape"></div>
+<div class="shape"></div>
+<div class="shape"></div>
 
-        // ارسال پیام و دریافت پاسخ از API
-        function sendMessage() {
-            const userInput = document.getElementById('userInput').value.trim();
-            if (userInput) {
-                appendMessage(userInput, 'user');
-                document.getElementById('userInput').value = '';
+<!-- نوارهای نوشته -->
+<div class="download-bar">
+    اندروید
+    <div class="download-bar-small">لینک مستقیم</div>
+</div>
+<div class="download-bar" style="background-color: #ff9800;">
+    اندروید
+    <div class="download-bar-small">دانلود از مایکت</div>
+</div>
 
-                // ارسال درخواست به API برای دریافت پاسخ واقعی
-                fetch('https://api.openai.com/v1/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer YOUR_API_KEY', // کلید API شما
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',  // یا مدل دیگری که انتخاب کرده‌اید
-                        messages: [{ role: 'user', content: userInput }],
-                        max_tokens: 100,
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const aiResponse = data.choices[0].message.content.trim();
-                    appendMessage(aiResponse, 'ai');
-                })
-                .catch(error => {
-                    console.error("خطا در ارسال درخواست به API:", error);
-                    appendMessage("متاسفانه در اتصال به ربات مشکلی پیش آمد. لطفاً بعداً امتحان کنید.", 'ai');
-                });
-            }
-        }
-    </script>
 </body>
 </html>
