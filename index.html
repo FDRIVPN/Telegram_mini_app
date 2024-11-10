@@ -13,6 +13,8 @@
         min-height: 100vh;
         margin: 0;
         background-color: #f2f2f2;
+        background-image: url('sd.png'); /* Background image */
+        background-size: cover;
         overflow: hidden;
         direction: rtl;
     }
@@ -22,17 +24,39 @@
         position: absolute;
         width: 50px;
         height: 50px;
-        border-radius: 50%;
         opacity: 0;
         animation: floatUp 3s ease-in-out infinite;
         background-color: rgba(0, 150, 136, 0.6);
     }
 
-    /* موقعیت‌دهی اشکال به صورت رندوم */
-    .shape:nth-child(1) { left: 20%; animation-delay: 0s; }
-    .shape:nth-child(2) { left: 40%; animation-delay: 1s; }
-    .shape:nth-child(3) { left: 60%; animation-delay: 2s; }
-    .shape:nth-child(4) { left: 80%; animation-delay: 1.5s; }
+    /* اشکال مختلف */
+    .shape:nth-child(1) { 
+        left: 20%; 
+        animation-delay: 0s; 
+        border-radius: 50%; /* Circle */
+    }
+    .shape:nth-child(2) { 
+        left: 40%; 
+        animation-delay: 1s; 
+        width: 50px; 
+        height: 50px; 
+        background-color: rgba(255, 0, 0, 0.6); 
+    }
+    .shape:nth-child(3) { 
+        left: 60%; 
+        animation-delay: 2s; 
+        width: 60px; 
+        height: 60px;
+        background-color: rgba(0, 0, 255, 0.6);
+    }
+    .shape:nth-child(4) { 
+        left: 80%; 
+        animation-delay: 1.5s; 
+        width: 50px; 
+        height: 50px;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Triangle */
+        background-color: rgba(255, 255, 0, 0.6);
+    }
 
     /* کلید انیمیشن برای حرکت */
     @keyframes floatUp {
@@ -53,9 +77,31 @@
         margin-bottom: 10px;
     }
 
-    .download-bar-small {
+    /* نوار پایین */
+    .download-bar-bottom {
+        background-color: #ff9800;
+        margin-top: 10px;
+    }
+
+    .download-bar .download-bar-small {
         font-size: 14px;
         margin-top: 5px;
+    }
+
+    /* متن "اندروید" بزرگتر در بالا */
+    .download-bar .android-text {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* نوارها در موقعیت عمودی */
+    .bars-container {
+        position: relative;
+        z-index: 1; /* Ensure bars are above the shapes */
+    }
+
+    .shape {
+        z-index: 0; /* Ensure shapes go behind the bars */
     }
 </style>
 </head>
@@ -68,13 +114,16 @@
 <div class="shape"></div>
 
 <!-- نوارهای نوشته -->
-<div class="download-bar">
-    اندروید
-    <div class="download-bar-small">لینک مستقیم</div>
-</div>
-<div class="download-bar" style="background-color: #ff9800;">
-    اندروید
-    <div class="download-bar-small">دانلود از مایکت</div>
+<div class="bars-container">
+    <div class="download-bar">
+        <div class="android-text">اندروید</div>
+        <div class="download-bar-small">لینک مستقیم</div>
+    </div>
+
+    <div class="download-bar download-bar-bottom">
+        <div class="android-text">اندروید</div>
+        <div class="download-bar-small">دانلود از مایکت</div>
+    </div>
 </div>
 
 </body>
