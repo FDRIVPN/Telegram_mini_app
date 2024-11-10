@@ -1,109 +1,136 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>صفحه دانلود</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        background-color: #f2f2f2;
-        background-image: url('sd.png'); /* Background image */
-        background-size: cover;
-        overflow: hidden;
-        direction: rtl;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه دانلود و چت صوتی</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+            background-image: url('sd.png'); /* Background image */
+            background-size: cover;
+            overflow: hidden;
+            direction: rtl;
+        }
 
-    /* انیمیشن حرکت از پایین به بالا */
-    .shape {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        opacity: 0;
-        animation: floatUp 3s ease-in-out infinite;
-        background-color: rgba(0, 150, 136, 0.6);
-    }
+        /* انیمیشن حرکت از پایین به بالا */
+        .shape {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+            animation: floatUp 3s ease-in-out infinite;
+            background-color: rgba(0, 150, 136, 0.6);
+        }
 
-    /* اشکال مختلف */
-    .shape:nth-child(1) { 
-        left: 20%; 
-        animation-delay: 0s; 
-        border-radius: 50%; /* Circle */
-    }
-    .shape:nth-child(2) { 
-        left: 40%; 
-        animation-delay: 1s; 
-        width: 50px; 
-        height: 50px; 
-        background-color: rgba(255, 0, 0, 0.6); 
-    }
-    .shape:nth-child(3) { 
-        left: 60%; 
-        animation-delay: 2s; 
-        width: 60px; 
-        height: 60px;
-        background-color: rgba(0, 0, 255, 0.6);
-    }
-    .shape:nth-child(4) { 
-        left: 80%; 
-        animation-delay: 1.5s; 
-        width: 50px; 
-        height: 50px;
-        clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Triangle */
-        background-color: rgba(255, 255, 0, 0.6);
-    }
+        /* اشکال مختلف */
+        .shape:nth-child(1) { 
+            left: 20%; 
+            animation-delay: 0s; 
+            border-radius: 50%; /* Circle */
+        }
+        .shape:nth-child(2) { 
+            left: 40%; 
+            animation-delay: 1s; 
+            width: 50px; 
+            height: 50px; 
+            background-color: rgba(255, 0, 0, 0.6); 
+        }
+        .shape:nth-child(3) { 
+            left: 60%; 
+            animation-delay: 2s; 
+            width: 60px; 
+            height: 60px;
+            background-color: rgba(0, 0, 255, 0.6);
+        }
+        .shape:nth-child(4) { 
+            left: 80%; 
+            animation-delay: 1.5s; 
+            width: 50px; 
+            height: 50px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Triangle */
+            background-color: rgba(255, 255, 0, 0.6);
+        }
 
-    /* کلید انیمیشن برای حرکت */
-    @keyframes floatUp {
-        0% { bottom: -100px; opacity: 0; }
-        50% { opacity: 0.8; }
-        100% { bottom: 100vh; opacity: 0; }
-    }
+        /* کلید انیمیشن برای حرکت */
+        @keyframes floatUp {
+            0% { bottom: -100px; opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { bottom: 100vh; opacity: 0; }
+        }
 
-    /* نوارهای نوشته */
-    .download-bar {
-        width: 300px;
-        background-color: #4caf50;
-        color: #fff;
-        padding: 15px;
-        border-radius: 25px;
-        text-align: center;
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
+        /* نوارهای نوشته */
+        .download-bar {
+            width: 300px;
+            background-color: #4caf50;
+            color: #fff;
+            padding: 15px;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
 
-    /* نوار پایین */
-    .download-bar-bottom {
-        background-color: #ff9800;
-        margin-top: 10px;
-    }
+        /* نوار پایین */
+        .download-bar-bottom {
+            background-color: #ff9800;
+            margin-top: 10px;
+        }
 
-    .download-bar .download-bar-small {
-        font-size: 14px;
-        margin-top: 5px;
-    }
+        .download-bar .download-bar-small {
+            font-size: 14px;
+            margin-top: 5px;
+        }
 
-    /* متن "اندروید" بزرگتر در بالا */
-    .download-bar .android-text {
-        font-size: 24px;
-        font-weight: bold;
-    }
+        /* متن "اندروید" بزرگتر در بالا */
+        .download-bar .android-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-    /* نوارها در موقعیت عمودی */
-    .bars-container {
-        position: relative;
-        z-index: 1; /* Ensure bars are above the shapes */
-    }
+        /* نوارها در موقعیت عمودی */
+        .bars-container {
+            position: relative;
+            z-index: 1; /* Ensure bars are above the shapes */
+        }
 
-    .shape {
-        z-index: 0; /* Ensure shapes go behind the bars */
-    }
-</style>
+        .shape {
+            z-index: 0; /* Ensure shapes go behind the bars */
+        }
+
+        /* بخش چت صوتی */
+        .voice-chat-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .voice-chat-button {
+            background-color: #ff5722;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .voice-chat-button:hover {
+            background-color: #f44336;
+        }
+    </style>
 </head>
 <body>
 
@@ -125,6 +152,54 @@
         <div class="download-bar-small">دانلود از مایکت</div>
     </div>
 </div>
+
+<!-- دکمه چت صوتی -->
+<div class="voice-chat-container">
+    <button class="voice-chat-button" onclick="startVoiceChat()">شروع چت صوتی</button>
+</div>
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script>
+    let localStream;
+    let peerConnection;
+    let remoteStream;
+    const serverConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+    // شروغ تماس صوتی
+    function startVoiceChat() {
+        document.querySelector('.voice-chat-button').disabled = true;
+
+        // دسترسی به میکروفون کاربر
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                localStream = stream;
+
+                // ایجاد ارتباط Peer
+                peerConnection = new RTCPeerConnection(serverConfig);
+                peerConnection.addStream(localStream);
+
+                peerConnection.onaddstream = (event) => {
+                    remoteStream = event.stream;
+                    const remoteAudio = new Audio();
+                    remoteAudio.srcObject = remoteStream;
+                    remoteAudio.play();
+                };
+
+                // ارسال و دریافت اطلاعات برای برقراری ارتباط
+                peerConnection.createOffer().then(offer => {
+                    return peerConnection.setLocalDescription(offer);
+                }).then(() => {
+                    // در اینجا شما باید علامت‌دهی را به طرف مقابل ارسال کنید (سیگنالینگ)
+                    // برای نمونه از WebSocket یا هر تکنولوژی دیگر برای ارسال offer و دریافت answer استفاده کنید.
+                }).catch(error => {
+                    console.error('خطا در برقراری تماس:', error);
+                });
+            })
+            .catch(error => {
+                console.error('دسترسی به میکروفون ممکن نیست:', error);
+            });
+    }
+</script>
 
 </body>
 </html>
