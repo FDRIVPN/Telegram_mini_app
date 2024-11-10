@@ -15,6 +15,7 @@
             background-color: #333;
             color: #fff;
             direction: rtl;
+            flex-direction: column;
         }
 
         .voice-chat-container {
@@ -48,16 +49,42 @@
         .voice-chat-button:hover {
             background-color: #f44336;
         }
+
+        .user-list {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+            background-color: #444;
+        }
+
+        .user-item {
+            font-size: 18px;
+            color: white;
+            margin: 5px;
+        }
+
+        .user-item span {
+            color: #ff5722;
+        }
     </style>
 </head>
 <body>
 
+<!-- فرم ورود نام کاربر -->
 <div class="voice-chat-container">
+    <input type="text" id="username" placeholder="نام خود را وارد کنید" />
     <button class="voice-chat-button" onclick="startVoiceChat()">شروع چت صوتی</button>
-    <div class="status-bar">
-        <div class="progress"></div>
-    </div>
-    <p id="connection-status">در انتظار اتصال...</p>
+</div>
+
+<!-- نوار وضعیت -->
+<div class="status-bar">
+    <div class="progress"></div>
+</div>
+
+<!-- لیست کاربران -->
+<div class="user-list" id="userList">
+    <!-- کاربران وارد شده در اینجا نمایش داده می‌شوند -->
 </div>
 
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
@@ -67,10 +94,12 @@
     const serverConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
     const socket = new WebSocket('wss://example.com/socket'); // آدرس سرور WebSocket خود را وارد کنید
 
+    // هنگامی که WebSocket باز می‌شود
     socket.onopen = () => {
-        document.getElementById('connection-status').innerText = "متصل به سرور";
+        console.log("متصل به سرور WebSocket");
     };
 
+    // دریافت پیام‌ها از WebSocket
     socket.onmessage = async (message) => {
         const data = JSON.parse(message.data);
 
@@ -80,19 +109,30 @@
             await peerConnections[data.from].setRemoteDescription(new RTCSessionDescription(data.answer));
         } else if (data.type === 'candidate') {
             await peerConnections[data.from].addIceCandidate(new RTCIceCandidate(data.candidate));
+        } else if (data.type === 'new-user') {
+            displayUser(data.username, data.id); // نمایش نام کاربر جدید
         }
     };
 
     // شروع تماس صوتی
     function startVoiceChat() {
-        document.querySelector('.voice-chat-button').disabled = true;
+        const username = document.getElementById("username").value.trim();
+        if (!username) {
+            alert("لطفاً نام خود را وارد کنید");
+            return;
+        }
 
+        document.querySelector('.voice-chat-button').disabled = true;
+        document.getElementById("username").disabled = true;
+
+        // ارسال نام به سرور
+        socket.send(JSON.stringify({ type: 'join', username }));
+
+        // دسترسی به میکروفون
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 localStream = stream;
-
-                // اتصال به WebSocket برای ارسال صدا
-                socket.send(JSON.stringify({ type: 'join' })); // پیامی برای نشان دادن پیوستن کاربر به اتاق ارسال می‌کنیم.
+                monitorAudio();
 
                 // وقتی کاربر به یک نفر پیوسته است، یک PeerConnection جدید ایجاد می‌شود
                 socket.onmessage = (message) => {
@@ -101,8 +141,6 @@
                         createPeerConnection(data.id); // ساخت PeerConnection برای کاربر جدید
                     }
                 };
-
-                monitorAudio();
             })
             .catch(error => {
                 console.error('دسترسی به میکروفون ممکن نیست:', error);
@@ -191,6 +229,15 @@
             requestAnimationFrame(updateStatus);
         }
         updateStatus();
+    }
+
+    // نمایش کاربران
+    function displayUser(username, userId) {
+        const userList = document.getElementById("userList");
+        const userItem = document.createElement("div");
+        userItem.classList.add("user-item");
+        userItem.innerHTML = `<span>${username}</span>`;
+        userList.appendChild(userItem);
     }
 </script>
 
